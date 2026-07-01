@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="noindex,nofollow">
+    <title>DASEN — Exist with Intention</title>
+    <meta name="description" content="DASEN — Camisas oversized com logo minimalista DASEN. Feito com intenção.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        ds: {
+                            black: '#0A0A0A', dark: '#141414', mid: '#6B6B6B',
+                            muted: '#999', light: '#C8C8C8', border: '#E2E2E2',
+                            bg: '#F7F6F5', cream: '#FDFCFA',
+                        }
+                    },
+                    letterSpacing: { brand: '0.35em' }
+                }
+            }
+        }
+    </script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+    <!--
+        ╔════════════════════════════════════════════════════════════╗
+        ║  Para Cosmond Grand oficial:                              ║
+        ║  1. Compre em pangrampangram.com/fonts/cosmond-grand       ║
+        ║  2. Hospede o .woff2 no servidor                           ║
+        ║  3. Descomente o @font-face abaixo                        ║
+        ║  4. Troque 'Cormorant Garamond' por 'Cosmond Grand'       ║
+        ╚════════════════════════════════════════════════════════════╝
+
+        @font-face {
+            font-family: 'Cosmond Grand';
+            src: url('/fonts/CosmondGrand-Light.woff2') format('woff2');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+        }
+    -->
+
+    <style>
+        *,*::before,*::after{box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        ::selection{background:#0A0A0A;color:#FDFCFA}
+        ::-webkit-scrollbar{width:3px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:#D4D4D4;border-radius:2px}
+
+        .rv{opacity:0;transform:translateY(18px);transition:opacity .9s cubic-bezier(.25,.1,.25,1),transform .9s cubic-bezier(.25,.1,.25,1)}
+        .rv.vis{opacity:1;transform:translateY(0)}
+
+        .img-l{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .7s cubic-bezier(.25,.1,.25,1)}
+        .img-f{opacity:1;z-index:2}
+        .img-b{opacity:0;z-index:1}
+        .pcard:hover .img-f,.pcard.tog .img-f{opacity:0}
+        .pcard:hover .img-b,.pcard.tog .img-b{opacity:1}
+
+        .vlbl{position:absolute;bottom:10px;right:10px;z-index:10;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:3px 9px;border-radius:1px;pointer-events:none;transition:opacity .4s}
+        .vlbl.ob{color:rgba(255,255,255,.55);background:rgba(0,0,0,.35);backdrop-filter:blur(4px)}
+        .vlbl.ow{color:rgba(0,0,0,.45);background:rgba(255,255,255,.55);backdrop-filter:blur(4px)}
+        .lf{opacity:1}.lc{opacity:0}
+        .pcard:hover .lf,.pcard.tog .lf{opacity:0}
+        .pcard:hover .lc,.pcard.tog .lc{opacity:1}
+
+        .thint{display:none;position:absolute;top:10px;left:10px;z-index:10;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:1px;pointer-events:none;animation:hp 2.5s ease-in-out infinite}
+        .thint.ob{color:rgba(255,255,255,.45);background:rgba(0,0,0,.25)}
+        .thint.ow{color:rgba(0,0,0,.35);background:rgba(255,255,255,.45)}
+        @keyframes hp{0%,100%{opacity:.5}50%{opacity:1}}
+        @media(hover:none)and(pointer:coarse){.thint{display:block}}
+
+        .sbtn{width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;letter-spacing:.06em;border:1px solid #E2E2E2;background:transparent;color:#6B6B6B;cursor:pointer;transition:all .3s;outline:none;-webkit-tap-highlight-color:transparent}
+        .sbtn:hover{border-color:#0A0A0A;color:#0A0A0A}
+        .sbtn:focus-visible{box-shadow:0 0 0 2px #0A0A0A}
+        .sbtn.sel{background:#0A0A0A;border-color:#0A0A0A;color:#FDFCFA}
+
+        .cta{width:100%;padding:15px 0;font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;border:none;cursor:pointer;transition:all .35s;outline:none;-webkit-tap-highlight-color:transparent}
+        .cta:focus-visible{box-shadow:0 0 0 2px #FDFCFA,0 0 0 4px #0A0A0A}
+        .cta.act{background:#0A0A0A;color:#FDFCFA}
+        .cta.act:hover{background:#222}
+        .cta.off{background:#E2E2E2;color:#B8B8B8;cursor:not-allowed}
+
+        .tst{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(18px);background:#0A0A0A;color:#FDFCFA;padding:13px 26px;font-size:11px;letter-spacing:.1em;border-radius:1px;opacity:0;z-index:9999;pointer-events:none;transition:opacity .4s,transform .4s;white-space:nowrap}
+        .tst.sh{opacity:1;transform:translateX(-50%) translateY(0)}
+
+        /* ── Frase central — Estilo Fear of God ─────────── */
+        .fog-phrase {
+            font-family: 'Cormorant Garamond', 'Georgia', serif;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: #0A0A0A;
+        }
+
+        /* ── Footer serif ───────────────────────────────── */
+        .footer-serif {
+            font-family: 'Cormorant Garamond', 'Georgia', serif;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.02em;
+            color: #0A0A0A;
+        }
+
+        /* ── Modais ─────────────────────────────────────── */
+        .mdl-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;opacity:0;pointer-events:none;transition:opacity .35s;backdrop-filter:blur(2px)}
+        .mdl-ov.sh{opacity:1;pointer-events:auto}
+        .mdl-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.97);z-index:8001;background:#FDFCFA;max-width:440px;width:92%;max-height:85vh;overflow-y:auto;border-radius:2px;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s}
+        .mdl-box.sh{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+
+        /* ── Cart Drawer ────────────────────────────────── */
+        .cart-drawer{position:fixed;top:0;right:0;bottom:0;width:360px;max-width:92vw;background:#FDFCFA;z-index:8500;transform:translateX(100%);transition:transform .4s cubic-bezier(.25,.1,.25,1);box-shadow:-4px 0 30px rgba(0,0,0,.08);display:flex;flex-direction:column}
+        .cart-drawer.sh{transform:translateX(0)}
+        .cart-ov{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:8499;opacity:0;pointer-events:none;transition:opacity .35s}
+        .cart-ov.sh{opacity:1;pointer-events:auto}
+        .cart-item{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid #F0EFEE;align-items:flex-start}
+        .cart-item-img{width:64px;height:80px;background:#F0EFEE;flex-shrink:0;overflow:hidden;position:relative}
+        .cart-item-img img{width:100%;height:100%;object-fit:cover}
+        .cart-remove{background:none;border:none;cursor:pointer;padding:2px;color:#C8C8C8;transition:color .2s;outline:none}
+        .cart-remove:hover{color:#0A0A0A}
+        .cart-remove:focus-visible{color:#0A0A0A}
+
+        /* ── Tabela ─────────────────────────────────────── */
+        .mtbl{width:100%;border-collapse:collapse;font-size:12px}
+        .mtbl th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#999;font-weight:500;padding:8px 6px;border-bottom:1px solid #E2E2E2;text-align:center}
+        .mtbl td{padding:7px 6px;border-bottom:1px solid #F0EFEE;text-align:center;color:#555}
+        .mtbl tr.hl td{background:#F7F6F5;font-weight:600;color:#0A0A0A}
+
+        /* ── Specs ──────────────────────────────────────── */
+        .spec-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #F0EFEE}
+        .spec-row:last-child{border-bottom:none}
+
+        /* ── Shipping ───────────────────────────────────── */
+        .ship-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #F0EFEE;cursor:pointer;transition:background .2s}
+        .ship-row:last-child{border-bottom:none}
+        .ship-row:hover{background:#F0EFEE}
+        .ship-row.picked{background:#EEEEE8}
+
+        .spinner{width:18px;height:18px;border:2px solid #E2E2E2;border-top-color:#0A0A0A;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+        @keyframes sp{to{transform:rotate(360deg)}}
+
+        .cart-badge{position:absolute;top:-5px;right:-6px;min-width:16px;height:16px;background:#0A0A0A;color:#FDFCFA;font-size:9px;font-weight:600;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;transition:transform .3s}
+        .cart-badge.pop{animation:bpop .35s ease}
+        @keyframes bpop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+        @media(prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+            .rv{opacity:1;transform:none}
+        }
+    </style>
+</head>
+
+<body class="bg-ds-bg text-ds-black font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="rv w-full pt-7 pb-5 px-5 md:px-8 flex items-center justify-between">
+        <a href="#" class="text-[13px] font-semibold tracking-brand uppercase text-ds-black" aria-label="DASEN">DASEN</a>
+        <nav class="flex items-center gap-5 md:gap-6">
+            <button type="button" id="btn-sizes" class="text-[10px] tracking-[.14em] uppercase text-ds-muted hover:text-ds-black transition-colors duration-300">Medidas</button>
+            <button type="button" id="btn-contact" class="text-[10px] tracking-[.14em] uppercase text-ds-muted hover:text-ds-black transition-colors duration-300">Contato</button>
+            <button type="button" id="btn-cart" class="relative text-ds-black hover:text-ds-dark transition-colors duration-300 p-1" aria-label="Carrinho">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                <span class="cart-badge hidden" id="cart-count">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center px-5 md:px-8">
+
+        <!-- HERO — Camisa branca -->
+        <section class="rv w-full max-w-4xl pt-4 pb-10 md:pt-6 md:pb-16" aria-label="Imagem principal">
+            <div class="relative aspect-[16/10] md:aspect-[16/9] bg-ds-dark overflow-hidden">
+                <img src="https://z-cdn-media.chatglm.cn/files/1d42824b-75e0-4287-9ad3-eb00d8715dc0.png?auth_key=1882934296-f80a76916ffe43b38d964618c219df1a-0-30d5bc766a6613c9b497040989d5cf64"
+                     alt="Modelo vestindo camisa DASEN branca oversized — frente"
+                     class="w-full h-full object-cover" loading="eager" decoding="async" draggable="false" width="1600" height="900">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+                <div class="absolute bottom-5 left-5 md:bottom-8 md:left-8 pointer-events-none">
+                    <p class="text-white/50 text-[10px] tracking-[.22em] uppercase font-light">Exist with intention</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MANIFESTO — Estilo Fear of God -->
+        <section class="rv w-full max-w-lg text-center pt-4 pb-14 md:pt-6 md:pb-20" aria-label="Filosofia">
+            <p class="fog-phrase text-[36px] md:text-[52px]">O essencial permanece.</p>
+        </section>
+
+        <!-- PRODUTOS -->
+        <section class="rv w-full max-w-3xl pb-8 md:pb-16" aria-label="Produtos">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7">
+
+                <!-- PRETA -->
+                <article class="pcard" data-product="preta" aria-label="Camisa oversized preta">
+                    <div class="relative aspect-[4/5] bg-ds-black overflow-hidden mb-4">
+                        <img class="img-l img-f" src="https://z-cdn-media.chatglm.cn/files/1dd500b8-b921-491a-b243-aa133357e0d0.png?auth_key=1882933715-ed4cdb4d030242eead9e73fe90983549-0-6017c84dd72c6f62758575e85d288ce3" alt="Camisa DASEN preta frente" loading="lazy" decoding="async" draggable="false" width="600" height="750">
+                        <img class="img-l img-b" src="https://z-cdn-media.chatglm.cn/files/981ff093-b816-4946-af92-14f304bf7e25.png?auth_key=1882933715-d90dbb4258684c30880f47586df9320b-0-a7d033f52be2292f83b6286ef75f1370" alt="Camisa DASEN preta costa" loading="lazy" decoding="async" draggable="false" width="600" height="750">
+                        <div class="absolute inset-0 bg-black/15 z-[3] pointer-events-none"></div>
+                        <span class="vlbl lf ob">Frente</span>
+                        <span class="vlbl lc ob">Costa</span>
+                        <span class="thint ob">Toque para alternar</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-[14px] font-medium tracking-[.02em]">Oversized — Preta</h2>
+                                <p class="text-[12px] text-ds-mid mt-0.5">DASEN em tom branco</p>
+                            </div>
+                            <span class="text-[14px] font-semibold tracking-[.01em]">R$ 80,00</span>
+                        </div>
+                        <div class="flex gap-2.5" role="radiogroup" aria-label="Tamanho preta">
+                            <button type="button" class="sbtn" data-product="preta" data-size="M" role="radio" aria-checked="false">M</button>
+                            <button type="button" class="sbtn" data-product="preta" data-size="G" role="radio" aria-checked="false">G</button>
+                        </div>
+                        <button type="button" class="cta off" data-product="preta" aria-disabled="true">Selecione o tamanho</button>
+                    </div>
+                </article>
+
+                <!-- BRANCA — Agora com fotos dedicadas -->
+                <article class="pcard" data-product="branca" aria-label="Camisa oversized branca">
+                    <div class="relative aspect-[4/5] bg-ds-cream overflow-hidden mb-4 border border-ds-border">
+                        <img class="img-l img-f" src="https://z-cdn-media.chatglm.cn/files/1d42824b-75e0-4287-9ad3-eb00d8715dc0.png?auth_key=1882934296-f80a76916ffe43b38d964618c219df1a-0-30d5bc766a6613c9b497040989d5cf64" alt="Camisa DASEN branca frente" loading="lazy" decoding="async" draggable="false" width="600" height="750">
+                        <img class="img-l img-b" src="https://z-cdn-media.chatglm.cn/files/e001baf7-bd5f-4bde-8a0b-478e3fcb3aca.png?auth_key=1882934296-514fefb250c748d6be37da506b282e4e-0-0aebf7de8c5ed2e5b991eafd0627f867" alt="Camisa DASEN branca costa" loading="lazy" decoding="async" draggable="false" width="600" height="750">
+                        <div class="absolute inset-0 bg-white/20 z-[3] pointer-events-none"></div>
+                        <span class="vlbl lf ow">Frente</span>
+                        <span class="vlbl lc ow">Costa</span>
+                        <span class="thint ow">Toque para alternar</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-[14px] font-medium tracking-[.02em]">Oversized — Branca</h2>
+                                <p class="text-[12px] text-ds-mid mt-0.5">DASEN em tom preto</p>
+                            </div>
+                            <span class="text-[14px] font-semibold tracking-[.01em]">R$ 80,00</span>
+                        </div>
+                        <div class="flex gap-2.5" role="radiogroup" aria-label="Tamanho branca">
+                            <button type="button" class="sbtn" data-product="branca" data-size="M" role="radio" aria-checked="false">M</button>
+                            <button type="button" class="sbtn" data-product="branca" data-size="G" role="radio" aria-checked="false">G</button>
+                        </div>
+                        <button type="button" class="cta off" data-product="branca" aria-disabled="true">Selecione o tamanho</button>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ESPECIFICAÇÕES -->
+        <section class="rv w-full max-w-3xl pb-12 md:pb-20" aria-label="Especificações">
+            <div class="border-t border-ds-border/60 pt-8 md:pt-10">
+                <h3 class="text-[10px] tracking-[.18em] uppercase text-ds-mid font-medium mb-5">Especificações</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-0">
+                    <div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Composição</span><span class="text-[12px] font-medium">96% Algodão, 4% Elastano</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Gramatura</span><span class="text-[12px] font-medium">240 g/m²</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Modelagem</span><span class="text-[12px] font-medium">Oversized</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Logo</span><span class="text-[12px] font-medium">DASEN silkado — minimalista</span></div>
+                    </div>
+                    <div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Acabamento</span><span class="text-[12px] font-medium">Costuras reforçadas</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Gola</span><span class="text-[12px] font-medium">Ribana 1x1</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Lavagem</span><span class="text-[12px] font-medium">À mão ou máquina delicada</span></div>
+                        <div class="spec-row"><span class="text-[12px] text-ds-mid">Origem</span><span class="text-[12px] font-medium">Nacional</span></div>
+                    </div>
+                </div>
+                <div class="mt-6 pt-5 border-t border-ds-border/40">
+                    <p class="text-[11px] text-ds-mid leading-[1.7]">Modelo da foto: 1,80m · 80kg — veste tamanho G. As medidas podem variar até 2cm.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BRAND STRIP -->
+        <section class="rv w-full max-w-4xl pb-14 md:pb-24" aria-label="Identidade">
+            <div class="relative aspect-[16/7] md:aspect-[16/6] bg-white overflow-hidden border border-ds-border/40">
+                <img src="https://z-cdn-media.chatglm.cn/files/ac254590-4c30-46aa-8444-8bfd31ac5001.png?auth_key=1882933715-27a5e3d87c1b4bbf9aa0dc5e91fcc40f-0-1f6e9185b773de2ecf2dbe37e10fbeb2"
+                     alt="Identidade visual DASEN — camisas, tags, embalagem"
+                     class="w-full h-full object-contain" loading="lazy" decoding="async" draggable="false" width="1600" height="600">
+            </div>
+        </section>
+
+        <!-- MANIFESTO FINAL — Em português, mesma fonte serif -->
+        <section class="rv w-full max-w-sm text-center pb-16 md:pb-24" aria-label="Manifesto">
+            <p class="fog-phrase text-[18px] md:text-[22px] leading-[1.6]">A roupa não define quem você é.<br>Ela acompanha quem você escolhe ser.</p>
+            <p class="fog-phrase text-[11px] tracking-[.08em] mt-5">Tenha menos. Escolha melhor. Permaneça.</p>
+        </section>
+    </main>
+
+    <!-- FOOTER — Preto, fonte serif -->
+    <footer class="rv w-full py-7 px-5 md:px-8 border-t border-ds-border/50 flex items-center justify-between">
+        <span class="footer-serif text-[11px]">© 2026 DASEN</span>
+        <span class="footer-serif text-[11px]">Feito com intenção</span>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="tst" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- CART OVERLAY -->
+    <div class="cart-ov" id="cart-ov"></div>
+    <!-- CART DRAWER -->
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Carrinho">
+        <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-ds-border/50">
+            <h3 class="text-[12px] font-medium tracking-[.1em] uppercase">Carrinho</h3>
+            <button type="button" id="cart-close" class="text-ds-muted hover:text-ds-black transition-colors w-8 h-8 flex items-center justify-center" aria-label="Fechar carrinho">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6" id="cart-items">
+            <div id="cart-empty" class="py-16 text-center">
+                <p class="text-[11px] text-ds-muted">Seu carrinho está vazio</p>
+            </div>
+            <div id="cart-list"></div>
+        </div>
+        <div class="px-6 py-5 border-t border-ds-border/50" id="cart-footer" style="display:none">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-[12px] text-ds-mid">Subtotal</span>
+                <span class="text-[14px] font-semibold" id="cart-total">R$ 0,00</span>
+            </div>
+            <button type="button" id="btn-checkout" class="cta act">Finalizar compra</button>
+        </div>
+    </aside>
+
+    <!-- MODAL MEDIDAS -->
+    <div class="mdl-ov" id="modal-ov" aria-hidden="true"></div>
+    <div class="mdl-box" id="modal-bx" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+        <div class="p-6 md:p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 id="mtitle" class="text-[13px] font-medium tracking-[.08em] uppercase">Tabela de Medidas</h3>
+                <button type="button" class="mdl-x text-ds-muted hover:text-ds-black transition-colors w-8 h-8 flex items-center justify-center" data-close="modal" aria-label="Fechar">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+                </button>
+            </div>
+            <div class="relative aspect-[3/2] mb-5 bg-ds-bg rounded overflow-hidden">
+                <img src="https://z-cdn-media.chatglm.cn/files/91315cfd-1fde-47e0-8673-b73e2614d760.jpg?auth_key=1882929037-d92c46c66d254be3baf5f35680fe895d-0-3dd4796de31fce8236445ade60341ec4"
+                     alt="Tabela de medidas DASEN" class="w-full h-full object-contain" loading="lazy" decoding="async" draggable="false">
+            </div>
+            <table class="mtbl">
+                <thead><tr><th>Tam</th><th>Largura</th><th>Altura</th><th>Manga</th><th>Busto</th></tr></thead>
+                <tbody>
+                    <tr><td>PP</td><td>56 cm</td><td>76 cm</td><td>40 cm</td><td>112 cm</td></tr>
+                    <tr class="hl"><td>M</td><td>60 cm</td><td>78 cm</td><td>42 cm</td><td>120 cm</td></tr>
+                    <tr class="hl"><td>G</td><td>64 cm</td><td>80 cm</td><td>44 cm</td><td>128 cm</td></tr>
+                    <tr><td>GG</td><td>68 cm</td><td>82 cm</td><td>46 cm</td><td>136 cm</td></tr>
+                    <tr><td>G2</td><td>72 cm</td><td>84 cm</td><td>48 cm</td><td>144 cm</td></tr>
+                </tbody>
+            </table>
+            <p class="text-[9px] text-ds-muted mt-3 tracking-[.05em]">As medidas podem variar até 2cm.</p>
+        </div>
+    </div>
+
+    <!-- MODAL CONTATO -->
+    <div class="mdl-ov" id="contact-ov" aria-hidden="true"></div>
+    <div class="mdl-box" id="contact-bx" role="dialog" aria-modal="true" aria-labelledby="ctitle" style="max-width:380px">
+        <div class="p-6 md:p-8 text-center">
+            <div class="flex items-center justify-end mb-2">
+                <button type="button" class="mdl-x text-ds-muted hover:text-ds-black transition-colors w-8 h-8 flex items-center justify-center" data-close="contact" aria-label="Fechar">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+                </button>
+            </div>
+            <p class="text-[10px] tracking-[.18em] uppercase text-ds-mid font-medium mb-4">DASEN</p>
+            <p class="fog-phrase text-[32px] mb-1">R$ 80,00</p>
+            <p class="text-[11px] text-ds-mid mb-8">Camisa Oversized — Preto ou Branco<br>Tamanhos M e G</p>
+            <a href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20DASEN." target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 h-11 px-6 bg-ds-black text-ds-cream text-[10px] tracking-[.14em] uppercase font-medium hover:bg-ds-dark transition-colors no-underline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Fale conosco
+            </a>
+            <p class="text-[9px] text-ds-light mt-5 tracking-[.05em]">Resposta em até 24h</p>
+        </div>
+    </div>
+
+    <!-- MODAL CHECKOUT -->
+    <div class="mdl-ov" id="chk-ov" aria-hidden="true"></div>
+    <div class="mdl-box" id="chk-bx" role="dialog" aria-modal="true" aria-labelledby="chktitle" style="max-width:480px">
+        <div class="p-6 md:p-8">
+            <div class="flex items-center justify-between mb-5">
+                <h3 id="chktitle" class="text-[13px] font-medium tracking-[.08em] uppercase">Finalizar Compra</h3>
+                <button type="button" class="mdl-x text-ds-muted hover:text-ds-black transition-colors w-8 h-8 flex items-center justify-center" data-close="checkout" aria-label="Fechar">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+                </button>
+            </div>
+            <div id="order-sum" class="mb-5 pb-5 border-b border-ds-border/60"></div>
+            <div class="mb-5">
+                <label for="inp-cep" class="block text-[10px] tracking-[.12em] uppercase text-ds-mid mb-2 font-medium">CEP para frete</label>
+                <div class="flex gap-2">
+                    <input type="text" id="inp-cep" maxlength="9" placeholder="00000-000" autocomplete="off" class="flex-1 h-11 px-3 text-[13px] border border-ds-border bg-transparent outline-none focus:border-ds-black transition-colors tracking-[.04em]" inputmode="numeric">
+                    <button type="button" id="btn-frete" class="h-11 px-4 text-[10px] tracking-[.12em] uppercase font-medium bg-ds-black text-ds-cream hover:bg-ds-dark transition-colors border-none cursor-pointer">Calcular</button>
+                </div>
+                <p class="text-[9px] text-ds-light mt-1.5">Melhor Envio — frete calculado automaticamente</p>
+            </div>
+            <div id="ship-res" class="mb-5 hidden">
+                <p class="text-[10px] tracking-[.12em] uppercase text-ds-mid mb-3 font-medium">Opções de Envio</p>
+                <div id="ship-list"></div>
+            </div>
+            <div id="sel-ship" class="mb-5 hidden">
+                <div class="flex justify-between items-center py-2 border-t border-b border-ds-border/60">
+                    <span id="ss-label" class="text-[12px] text-ds-black font-medium"></span>
+                    <span id="ss-price" class="text-[12px] text-ds-mid"></span>
+                </div>
+            </div>
+            <div id="total-row" class="hidden flex justify-between items-center mb-5">
+                <span class="text-[12px] font-medium tracking-[.04em]">Total</span>
+                <span id="total-val" class="text-[15px] font-semibold tracking-[.02em]"></span>
+            </div>
+            <div id="mp-wrap"><p class="text-[11px] text-ds-muted">Calcule o frete para prosseguir</p></div>
+        </div>
+    </div>
+
+    <!-- ========== JS ========== -->
+    <script>
+    'use strict';
+    (function DASEN(){
+        'use strict';
+
+        var _K='DASEN26INTENTION';
+        function _enc(p){var r=[],k=_K;for(var i=0;i<p.length;i++)r.push(p.charCodeAt(i)^k.charCodeAt(i%k.length));return r.join(',')}
+        function _dec(e){var p=e.split(','),r='',k=_K;for(var i=0;i<p.length;i++)r+=String.fromCharCode(parseInt(p[i],10)^k.charCodeAt(i%k.length));return r}
+
+        var _eMP=_enc('TEST-4d7b2573-8c7c-4a5b-9e6f-1a2b3c4d5e6f');
+        var _eME=_enc('SEU_TOKEN_AQUI_MELHOR_ENVIO_SANDBOX');
+        var _eENV=_enc('sandbox');
+        var _eCEP=_enc('01001000');
+
+        var MP_PK,ME_TK,ME_ENV,CEP_ORIG;
+        try{MP_PK=_dec(_eMP);ME_TK=_dec(_eME);ME_ENV=_dec(_eENV);CEP_ORIG=_dec(_eCEP);_eMP=_eME=_eENV=_eCEP=_K=null}catch(e){}
+
+        var IMG_PRETA='https://z-cdn-media.chatglm.cn/files/1dd500b8-b921-491a-b243-aa133357e0d0.png?auth_key=1882933715-ed4cdb4d030242eead9e73fe90983549-0-6017c84dd72c6f62758575e85d288ce3';
+        var IMG_BRANCA='https://z-cdn-media.chatglm.cn/files/1d42824b-75e0-4287-9ad3-eb00d8715dc0.png?auth_key=1882934296-f80a76916ffe43b38d964618c219df1a-0-30d5bc766a6613c9b497040989d5cf64';
+
+        var CAT=Object.create(null);
+        CAT.preta=Object.freeze({id:'DS-OV-PRT',name:'Oversized Preta',color:'Preta',price:8000,weight:280,sku:'DS-OV-PRT',img:IMG_PRETA});
+        CAT.branca=Object.freeze({id:'DS-OV-BRC',name:'Oversized Branca',color:'Branca',price:8000,weight:280,sku:'DS-OV-BRC',img:IMG_BRANCA});
+
+        var V_SIZES=Object.freeze(['M','G']);
+        var V_PRODS=Object.freeze(['preta','branca']);
+        var ME_API_BASE='https://sandbox.melhorenvio.com.br/api/v2/me/shipment/calculate';
+
+        var S=Object.create(null);
+        S.sz=Object.create(null);S.busy=Object.create(null);S.ship=Object.create(null);
+        S.selShip=null;S.token=null;S.cart=Object.freeze([]);S.cartSeq=0;
+
+        function safe(t){if(typeof t!=='string')return '';var d=document.createElement('span');d.textContent=t;return d.textContent}
+        function okSz(s){return V_SIZES.indexOf(s)!==-1}
+        function okPr(p){return V_PRODS.indexOf(p)!==-1}
+        function brl(c){return'R$ '+(c/100).toFixed(2).replace('.',',')}
+        function deb(fn,ms){var t=null;return function(){var a=arguments,c=this;if(t)clearTimeout(t);t=setTimeout(function(){fn.apply(c,a)},ms)}}
+        function tok(){var a=new Uint8Array(16);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(a);else for(var i=0;i<16;i++)a[i]=(Math.random()*256)|0;var h='';for(var j=0;j<a.length;j++)h+=('0'+a[j].toString(16)).slice(-2);return h}
+
+        var _te=null,_tt=null;
+        function toast(m){if(!_te)_te=document.getElementById('toast');if(!_te)return;_te.textContent=safe(m);if(_tt)clearTimeout(_tt);_te.classList.remove('sh');void _te.offsetWidth;_te.classList.add('sh');_tt=setTimeout(function(){_te.classList.remove('sh')},3000)}
+
+        var _pf=null;
+        function openM(ov,bx){var o=document.getElementById(ov),b=document.getElementById(bx);if(!o||!b)return;_pf=document.activeElement;o.classList.add('sh');b.classList.add('sh');o.setAttribute('aria-hidden','false');b.setAttribute('aria-hidden','false');var f=b.querySelector('button,input,select,textarea,[tabindex]:not([tabindex="-1"])');if(f)setTimeout(function(){f.focus()},100)}
+        function closeM(){var ovs=document.querySelectorAll('.mdl-ov'),bxs=document.querySelectorAll('.mdl-box');for(var i=0;i<ovs.length;i++){ovs[i].classList.remove('sh');ovs[i].setAttribute('aria-hidden','true')}for(var j=0;j<bxs.length;j++){bxs[j].classList.remove('sh');bxs[j].setAttribute('aria-hidden','true')}if(_pf){_pf.focus();_pf=null}}
+
+        function openCart(){var ov=document.getElementById('cart-ov'),dr=document.getElementById('cart-drawer');if(!ov||!dr)return;_pf=document.activeElement;ov.classList.add('sh');dr.classList.add('sh');var f=dr.querySelector('button,[tabindex]:not([tabindex="-1"])');if(f)setTimeout(function(){f.focus()},100)}
+        function closeCart(){var ov=document.getElementById('cart-ov'),dr=document.getElementById('cart-drawer');if(ov)ov.classList.remove('sh');if(dr)dr.classList.remove('sh');if(_pf){_pf.focus();_pf=null}}
+
+        function addToCart(prod,sz){
+            var pr=CAT[prod];if(!pr||!okSz(sz))return;
+            var item=Object.freeze({uid:S.cartSeq++,key:prod+'_'+sz,product:prod,size:sz,name:pr.name,color:pr.color,price:pr.price,sku:pr.sku,img:pr.img});
+            var arr=S.cart.slice();arr.push(item);S.cart=Object.freeze(arr);
+            renderCart();toast(safe(pr.color)+' '+sz+' adicionada');
+            var badge=document.getElementById('cart-count');if(badge){badge.classList.remove('pop');void badge.offsetWidth;badge.classList.add('pop')}
+        }
+        function removeFromCart(uid){var arr=S.cart.filter(function(it){return it.uid!==uid});S.cart=Object.freeze(arr);renderCart()}
+        function cartTotal(){var t=0;for(var i=0;i<S.cart.length;i++)t+=S.cart[i].price;return t}
+
+        function renderCart(){
+            var badge=document.getElementById('cart-count'),empty=document.getElementById('cart-empty'),list=document.getElementById('cart-list'),footer=document.getElementById('cart-footer'),totalEl=document.getElementById('cart-total');
+            if(S.cart.length>0){badge.classList.remove('hidden');badge.textContent=S.cart.length}else{badge.classList.add('hidden')}
+            if(S.cart.length===0){empty.style.display='block';list.innerHTML='';footer.style.display='none';return}
+            empty.style.display='none';footer.style.display='block';totalEl.textContent=brl(cartTotal());
+            var h='';
+            for(var i=0;i<S.cart.length;i++){
+                var it=S.cart[i];
+                h+='<div class="cart-item"><div class="cart-item-img"><img src="'+safe(it.img)+'" alt="" draggable="false" loading="lazy"></div>';
+                h+='<div class="flex-1 min-w-0"><p class="text-[12px] font-medium tracking-[.01em] truncate">'+safe(it.name)+'</p>';
+                h+='<p class="text-[11px] text-ds-mid mt-0.5">Tam. '+safe(it.size)+'</p>';
+                h+='<p class="text-[12px] font-medium mt-1.5">'+brl(it.price)+'</p></div>';
+                h+='<button type="button" class="cart-remove" data-remove-uid="'+it.uid+'" aria-label="Remover">';
+                h+='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button></div>';
+            }
+            list.innerHTML=h;
+            var rmBtns=list.querySelectorAll('.cart-remove');
+            for(var j=0;j<rmBtns.length;j++)(function(btn){btn.addEventListener('click',function(){var uid=parseInt(btn.getAttribute('data-remove-uid'),10);if(!isNaN(uid))removeFromCart(uid)})})(rmBtns[j]);
+        }
+
+        function initReveal(){
+            var els=document.querySelectorAll('.rv');if(!els.length)return;
+            if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){for(var i=0;i<els.length;i++)els[i].classList.add('vis');return}
+            for(var j=0;j<els.length;j++)(function(el,idx){setTimeout(function(){el.classList.add('vis')},120+idx*180)})(els[j],j);
+        }
+
+        function initSizes(){
+            var btns=document.querySelectorAll('.sbtn');
+            for(var i=0;i<btns.length;i++)(function(btn){
+                btn.addEventListener('click',function(){
+                    var p=btn.getAttribute('data-product'),s=btn.getAttribute('data-size');
+                    if(!okPr(p)||!okSz(s))return;S.sz[p]=s;
+                    var sibs=document.querySelectorAll('.sbtn[data-product="'+p+'"]');
+                    for(var j=0;j<sibs.length;j++){
+                        if(sibs[j].getAttribute('data-size')===s){sibs[j].classList.add('sel');sibs[j].setAttribute('aria-checked','true')}
+                        else{sibs[j].classList.remove('sel');sibs[j].setAttribute('aria-checked','false')}
+                    }
+                    updCTA(p);
+                });
+            })(btns[i]);
+        }
+
+        function updCTA(p){
+            var c=document.querySelector('.cta[data-product="'+p+'"]');if(!c)return;
+            var s=S.sz[p];
+            if(s){c.textContent='Adicionar ao carrinho';c.classList.remove('off');c.classList.add('act');c.removeAttribute('aria-disabled')}
+            else{c.textContent='Selecione o tamanho';c.classList.add('off');c.classList.remove('act');c.setAttribute('aria-disabled','true')}
+        }
+
+        function initAddBtns(){
+            var ctas=document.querySelectorAll('.cta[data-product]');
+            for(var i=0;i<ctas.length;i++)(function(cta){
+                cta.addEventListener('click',deb(function(){
+                    var p=cta.getAttribute('data-product');if(!okPr(p))return;
+                    var s=S.sz[p];if(!s||!okSz(s))return;if(S.busy[p])return;S.busy[p]=true;
+                    addToCart(p,s);S.sz[p]=null;
+                    var sibs=document.querySelectorAll('.sbtn[data-product="'+p+'"]');
+                    for(var j=0;j<sibs.length;j++){sibs[j].classList.remove('sel');sibs[j].setAttribute('aria-checked','false')}
+                    updCTA(p);setTimeout(function(){S.busy[p]=false},600);
+                },400));
+            })(ctas[i]);
+        }
+
+        function initCheckoutBtn(){
+            var btn=document.getElementById('btn-checkout');if(!btn)return;
+            btn.addEventListener('click',function(){
+                if(S.cart.length===0){toast('Carrinho vazio');return}
+                closeCart();S.token=tok();S.ship=Object.create(null);S.selShip=null;
+                buildOrderSum();resetChk();setTimeout(function(){openM('chk-ov','chk-bx')},350);
+            });
+        }
+
+        function buildOrderSum(){
+            var el=document.getElementById('order-sum');if(!el)return;
+            var h='',total=0;
+            for(var i=0;i<S.cart.length;i++){
+                var it=S.cart[i];total+=it.price;
+                h+='<div style="display:flex;justify-content:space-between;align-items:center';
+                if(i>0)h+=';margin-top:8px;padding-top:8px;border-top:1px solid #F0EFEE';
+                h+='"><div><p style="font-size:13px;font-weight:500;letter-spacing:.02em">'+safe(it.name)+'</p>';
+                h+='<p style="font-size:11px;color:#999;margin-top:2px">Tam. '+safe(it.size)+' · '+safe(it.sku)+'</p></div>';
+                h+='<span style="font-size:13px;font-weight:600">'+brl(it.price)+'</span></div>';
+            }
+            h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #E2E2E2">';
+            h+='<span style="font-size:12px;font-weight:500">Subtotal ('+S.cart.length+' '+('item'+(S.cart.length>1?'s':''))+')</span>';
+            h+='<span style="font-size:14px;font-weight:600">'+brl(total)+'</span></div>';
+            el.innerHTML=h;
+        }
+
+        function resetChk(){
+            var ids=['ship-res','sel-ship','total-row'];
+            for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)e.classList.add('hidden')}
+            var sl=document.getElementById('ship-list');if(sl)sl.innerHTML='';
+            var ci=document.getElementById('inp-cep');if(ci)ci.value='';
+            var mw=document.getElementById('mp-wrap');if(mw)mw.innerHTML='<p style="font-size:11px;color:#999">Calcule o frete para prosseguir</p>';
+        }
+
+        function initShip(){
+            var btn=document.getElementById('btn-frete'),inp=document.getElementById('inp-cep');if(!btn||!inp)return;
+            inp.addEventListener('input',function(){var v=inp.value.replace(/\D/g,'').substring(0,8);if(v.length>5)v=v.substring(0,5)+'-'+v.substring(5);inp.value=v});
+            btn.addEventListener('click',calcFrete);
+            inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();calcFrete()}});
+        }
+
+        function calcFrete(){
+            var inp=document.getElementById('inp-cep'),cep=inp.value.replace(/\D/g,'');
+            if(cep.length!==8){toast('CEP inválido');return}if(S.cart.length===0)return;
+            var sr=document.getElementById('ship-res'),sl=document.getElementById('ship-list');
+            sr.classList.remove('hidden');sl.innerHTML='<div style="padding:16px 0;text-align:center"><span class="spinner"></span><p style="font-size:11px;color:#999;margin-top:8px">Calculando frete...</p></div>';
+            var prods=[];for(var i=0;i<S.cart.length;i++){var it=S.cart[i],pr=CAT[it.product];prods.push({id:pr.sku,width:30,height:5,length:40,weight:pr.weight,insurance_value:pr.price,quantity:1})}
+            var payload=[{from:{postal_code:CEP_ORIG},to:{postal_code:cep},company:null,services:'1,2,3,4',products:prods}];
+            fetch(ME_API_BASE,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','Authorization':'Bearer '+ME_TK},body:JSON.stringify(payload)})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+            .then(function(d){if(!d||!Array.isArray(d)||!d.length||!Array.isArray(d[0]))throw new Error('bad');renderShip(d[0])})
+            .catch(function(){sl.innerHTML='<p style="font-size:11px;color:#b44;padding:12px 0">Erro ao calcular frete. Verifique o CEP ou tente novamente.</p>'});
+        }
+
+        function renderShip(opts){
+            var sl=document.getElementById('ship-list');if(!sl)return;S.ship=Object.create(null);
+            var names={1:'PAC',2:'SEDEX',3:'SEDEX 10',4:'SEDEX Hoje',17:'PAC GF',45:'SEDEX GF'};
+            var h='';
+            for(var i=0;i<opts.length;i++){
+                var o=opts[i];if(!o||o.error)continue;
+                var nm=names[o.id]||('Envio '+o.id),pr=parseFloat(o.price)||0;
+                var dy=o.delivery_range?(o.delivery_range.min+'-'+o.delivery_range.max):'—';
+                var dis=pr<=0||o.not_available,k='s'+o.id;
+                S.ship[k]=Object.freeze({id:o.id,name:nm,price:Math.round(pr*100),days:dy});
+                h+='<div class="ship-row'+(dis?' style="opacity:.4;pointer-events:none"':'')+'" data-sk="'+k+'" role="radio" aria-checked="false" tabindex="'+(dis?'-1':'0')+'">';
+                h+='<div><p style="font-size:12px;font-weight:500;color:#0A0A0A">'+safe(nm)+'</p>';
+                h+='<p style="font-size:10px;color:#999;margin-top:1px">'+safe(dy)+' dias úteis</p></div>';
+                h+='<span style="font-size:12px;font-weight:500;color:#555">'+(pr>0?brl(Math.round(pr*100)):'Grátis')+'</span></div>';
+            }
+            sl.innerHTML=h;
+            if(!h){sl.innerHTML='<p style="font-size:11px;color:#999;padding:12px 0">Nenhuma opção para este CEP.</p>';return}
+            var rows=sl.querySelectorAll('.ship-row[data-sk]');
+            for(var j=0;j<rows.length;j++)(function(row){row.addEventListener('click',function(){pickShip(row)});row.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pickShip(row)}})})(rows[j]);
+        }
+
+        function pickShip(row){
+            var k=row.getAttribute('data-sk');if(!k||!S.ship[k])return;S.selShip=S.ship[k];
+            var all=row.parentElement.querySelectorAll('.ship-row');
+            for(var i=0;i<all.length;i++){all[i].classList.remove('picked');all[i].setAttribute('aria-checked','false')}
+            row.classList.add('picked');row.setAttribute('aria-checked','true');
+            var ss=document.getElementById('sel-ship'),sl=document.getElementById('ss-label'),sp=document.getElementById('ss-price');
+            if(ss&&sl&&sp){sl.textContent='Frete: '+S.selShip.name+' ('+S.selShip.days+' dias)';sp.textContent=S.selShip.price>0?brl(S.selShip.price):'Grátis';ss.classList.remove('hidden')}
+            updTotal();initMP();
+        }
+
+        function updTotal(){
+            var tr=document.getElementById('total-row'),tv=document.getElementById('total-val');if(!tr||!tv)return;
+            if(!S.selShip||S.cart.length===0)return;var t=cartTotal()+S.selShip.price;tv.textContent=brl(t);tr.classList.remove('hidden');
+        }
+
+        var _mpCtrl=null;
+        function initMP(){
+            var mw=document.getElementById('mp-wrap');if(!mw)return;
+            mw.innerHTML='<div style="padding:16px 0;text-align:center"><span class="spinner"></span><p style="font-size:11px;color:#999;margin-top:8px">Carregando pagamento...</p></div>';
+            try{
+                if(_mpCtrl&&typeof _mpCtrl.unmount==='function')try{_mpCtrl.unmount()}catch(e){}
+                if(typeof mp==='undefined'||!mp.bricks){mw.innerHTML='<p style="font-size:11px;color:#b44;padding:12px 0">Erro ao carregar Mercado Pago. Recarregue.</p>';return}
+                if(!S.selShip||S.cart.length===0)return;
+                var total=cartTotal()+S.selShip.price;mw.innerHTML='';
+                var ctn=document.createElement('div');ctn.id='mp-brick-ctn';mw.appendChild(ctn);
+                _mpCtrl=mp.bricks().create('payment','mp-brick-ctn',{
+                    initialization:{amount:total/100,payer:{firstName:'',lastName:'',email:''}},
+                    customization:{visual:{style:{theme:'default',customColor:'#0A0A0A',borderRadius:'1px'}},paymentMethods:{maxInstallments:3,creditCard:'all',debitCard:'all',ticket:'all',bankTransfer:'all'}},
+                    callbacks:{
+                        onReady:function(){},
+                        onSubmit:function(pd){
+                            if(S.busy._mp)return;S.busy._mp=true;
+                            mw.innerHTML='<div style="padding:20px 0;text-align:center"><span class="spinner"></span><p style="font-size:11px;color:#999;margin-top:10px">Processando pedido...</p></div>';
+                            setTimeout(function(){closeM();toast('Pedido '+S.token.substring(0,8)+' — confirmação por e-mail');S.cart=Object.freeze([]);S.selShip=null;S.token=null;renderCart();resetAllSizes();S.busy._mp=false},2500);
+                            return Promise.resolve();
+                        },
+                        onError:function(){toast('Erro no pagamento. Tente novamente.')}
+                    }
+                });
+            }catch(e){mw.innerHTML='<p style="font-size:11px;color:#b44;padding:12px 0">Erro ao inicializar pagamento.</p>'}
+        }
+
+        function resetAllSizes(){
+            var ctas=document.querySelectorAll('.cta[data-product]');
+            for(var i=0;i<ctas.length;i++){ctas[i].textContent='Selecione o tamanho';ctas[i].classList.add('off');ctas[i].classList.remove('act');ctas[i].setAttribute('aria-disabled','true')}
+            var sbs=document.querySelectorAll('.sbtn');for(var j=0;j<sbs.length;j++){sbs[j].classList.remove('sel');sbs[j].setAttribute('aria-checked','false')}
+            S.sz=Object.create(null);
+        }
+
+        function initProduct(){
+            var cards=document.querySelectorAll('.pcard'),touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+            for(var i=0;i<cards.length;i++)(function(card){
+                if(touch){card.addEventListener('touchend',function(e){var ct=card.querySelector('[class*="aspect-"]');if(!ct||!ct.contains(e.target))return;e.preventDefault();card.classList.toggle('tog')},{passive:false})}
+            })(cards[i]);
+            if(touch){document.addEventListener('touchstart',function(e){for(var j=0;j<cards.length;j++)if(!cards[j].contains(e.target))cards[j].classList.remove('tog')},{passive:true})}
+        }
+
+        function initImg(){
+            var imgs=document.querySelectorAll('img');
+            for(var i=0;i<imgs.length;i++){imgs[i].setAttribute('draggable','false');imgs[i].addEventListener('dragstart',function(e){e.preventDefault()});imgs[i].addEventListener('contextmenu',function(e){e.preventDefault()})}
+        }
+
+        var DANG=['onmouseover','onmouseout','onmousedown','onmouseup','onclick','ondblclick','onkeydown','onkeyup','onkeypress','onfocus','onblur','onsubmit','onreset','onchange','oninput','onload','onerror','onanimationend','ontouchstart','ontouchend','onpointerdown','onpointerup','oncontextmenu'];
+        function stripEl(el){for(var i=0;i<DANG.length;i++)if(el.hasAttribute&&el.hasAttribute(DANG[i]))el.removeAttribute(DANG[i]);var ch=el.querySelectorAll?el.querySelectorAll('*'):[];for(var j=0;j<ch.length;j++)for(var k=0;k<DANG.length;k++)if(ch[j].hasAttribute(DANG[k]))ch[j].removeAttribute(DANG[k])}
+        function initGuard(){
+            var all=document.querySelectorAll('*');for(var i=0;i<all.length;i++)for(var j=0;j<DANG.length;j++)if(all[i].hasAttribute(DANG[j]))all[i].removeAttribute(DANG[j]);
+            if(!window.MutationObserver)return;
+            new MutationObserver(function(mut){
+                for(var m=0;m<mut.length;m++){
+                    var added=mut[m].addedNodes;for(var n=0;n<added.length;n++)if(added[n].nodeType===1)stripEl(added[n]);
+                    if(mut[m].type==='attributes'&&mut[m].target.nodeType===1){if(DANG.indexOf(mut[m].attributeName)!==-1)mut[m].target.removeAttribute(mut[m].attributeName)}
+                }
+            }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:DANG});
+        }
+
+        document.addEventListener('DOMContentLoaded',function(){
+            try{initGuard()}catch(e){}try{initReveal()}catch(e){}try{initSizes()}catch(e){}
+            try{initAddBtns()}catch(e){}try{initCheckoutBtn()}catch(e){}try{initShip()}catch(e){}
+            try{initProduct()}catch(e){}try{initImg()}catch(e){}try{renderCart()}catch(e){}
+            var bs=document.getElementById('btn-sizes');if(bs)bs.addEventListener('click',function(){openM('modal-ov','modal-bx')});
+            var bc=document.getElementById('btn-contact');if(bc)bc.addEventListener('click',function(){openM('contact-ov','contact-bx')});
+            var bcart=document.getElementById('btn-cart');if(bcart)bcart.addEventListener('click',openCart);
+            var xs=document.querySelectorAll('.mdl-x');for(var i=0;i<xs.length;i++)xs[i].addEventListener('click',closeM);
+            var ovs=document.querySelectorAll('.mdl-ov');for(var j=0;j<ovs.length;j++)ovs[j].addEventListener('click',closeM);
+            var cov=document.getElementById('cart-ov');if(cov)cov.addEventListener('click',closeCart);
+            var ccl=document.getElementById('cart-close');if(ccl)ccl.addEventListener('click',closeCart);
+            document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeM();closeCart()}});
+        });
+    })();
+    </script>
+</body>
+</html>
