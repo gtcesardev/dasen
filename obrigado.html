@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="robots" content="noindex,nofollow">
+    <title>DASEN — Pedido</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter',sans-serif;background:#F7F6F5;color:#0A0A0A;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+        .w{text-align:center;max-width:400px}
+        .ic{width:48px;height:48px;border:1.5px solid #0A0A0A;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px}
+        .ic svg{width:20px;height:20px;stroke:#0A0A0A;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+        h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:28px;letter-spacing:-.01em;margin-bottom:8px}
+        p{font-size:12px;color:#6B6B6B;line-height:1.7;margin-bottom:24px}
+        a{display:inline-block;padding:12px 32px;background:#0A0A0A;color:#FDFCFA;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;transition:background .3s}
+        a:hover{background:#222}
+        .err .ic{border-color:#b44}.err .ic svg{stroke:#b44}.err h1{color:#b44}
+        .pen .ic{border-color:#C8C8C8}.pen .ic svg{stroke:#C8C8C8}
+    </style>
+</head>
+<body>
+    <div class="w" id="app">
+        <div class="ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h1 id="t">Processando...</h1>
+        <p id="m">Aguarde um momento.</p>
+        <a href="/" id="btn">Voltar à loja</a>
+    </div>
+    <script>
+    'use strict';
+    (function(){
+        var p=new URLSearchParams(window.location.search);
+        var st=p.get('status');
+        var ord=p.get('order');
+        var app=document.getElementById('app');
+        var t=document.getElementById('t');
+        var m=document.getElementById('m');
+
+        if(st==='success'){
+            t.textContent='Pagamento aprovado';
+            m.textContent=ord?'Pedido '+(ord.substring(0,8))+' — confirmação por e-mail em instantes.':'Confirmação por e-mail em instantes.';
+        }else if(st==='pending'){
+            app.classList.add('pen');
+            t.textContent='Pagamento pendente';
+            m.textContent='Seu pagamento está sendo processado. A confirmação chegará por e-mail assim que for aprovado.';
+        }else if(st==='failure'){
+            app.classList.add('err');
+            t.textContent='Pagamento não aprovado';
+            m.textContent='Tente novamente com outro cartão ou método de pagamento. Se o problema persistir, entre em contato.';
+        }else{
+            app.classList.add('pen');
+            t.textContent='Pagamento em análise';
+            m.textContent='Se você completou o pagamento, a confirmação chegará por e-mail.';
+        }
+    })();
+    </script>
+</body>
+</html>
